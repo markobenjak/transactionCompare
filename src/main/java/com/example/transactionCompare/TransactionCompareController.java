@@ -23,14 +23,13 @@ public class TransactionCompareController {
     public TransactionCompareController() {
     }
 
+    @CrossOrigin(origins = "http://localhost:8080")
     @PostMapping("/uploadFiles")
     public ReturnResultData uploadFiles(@RequestParam("csvFile") MultipartFile csvFile, @RequestParam("csvFile2") MultipartFile csvFile2) throws IOException {
         ReturnResultData returnResultData = new ReturnResultData();
-
+        System.out.print("USAO SAM: " + csvFile);
         try {
-            //Reader reader = new BufferedReader(new InputStreamReader(csvFile.getInputStream()));
             HashMap<Integer, String> file1Map = new HashMap<Integer, String>();
-            HashMap<Integer, String> file2Map = new HashMap<Integer, String>();
             List<ClientProfile> clientProfileListFile1 = new ArrayList<>();
             List<ClientProfile> clientProfileListFile2 = new ArrayList<>();
 
@@ -52,7 +51,6 @@ public class TransactionCompareController {
             Integer numberOfFile2Lines = 0;
             while ((csvFile2Lines = brFile2.readLine()) != null) {
                 if (file1Map.containsValue(csvFile2Lines)) {
-                    //if file1 has same line in file2
                     for (Object o : file1Map.keySet()) {
                         if (file1Map.get(o).equals(csvFile2Lines)) {
                             file1Map.remove(o);
@@ -66,16 +64,6 @@ public class TransactionCompareController {
                     System.arraycopy(splitCsvLineFile2, 0, splitCsvLineFile2FinalSize, 0, splitCsvLineFile2.length);
                     ClientProfile clientProfileFile2 = new ClientProfile(splitCsvLineFile2FinalSize);
                     clientProfileListFile2.add(clientProfileFile2);
-//                    if(splitCsvLineFile2.length != 8){
-//                        String[] splitCsvLineFile2Backup = new String[8];
-//                        System.arraycopy(splitCsvLineFile2, 0, splitCsvLineFile2Backup, 0, splitCsvLineFile2.length);
-//                        ClientProfile clientProfileFile2 = new ClientProfile(splitCsvLineFile2);
-//                        clientProfileListFile2.add(clientProfileFile2);
-//                    }else {
-//                        ClientProfile clientProfileFile2 = new ClientProfile(splitCsvLineFile2);
-//                        clientProfileListFile2.add(clientProfileFile2);
-//                    }
-                    //file2Map.put(numberOfFile2Lines, csvFile2Lines);
                 }
                 numberOfFile2Lines++;
             }
@@ -107,7 +95,7 @@ public class TransactionCompareController {
 
         }catch (Exception ex){
             System.out.println(ex);
-        };
+        }
         return returnResultData;
     }
 }
