@@ -24,7 +24,7 @@ public class TransactionCompareController {
     public TransactionCompareController() {
     }
 
-    @CrossOrigin(origins = "https://transactioncompare-mb.herokuapp.com")
+    @CrossOrigin(origins = "https://transactioncompareweb-mb.herokuapp.com")
     @PostMapping("/uploadFiles")
     public ReturnResultData uploadFiles(@RequestParam("csvFile") MultipartFile csvFile, @RequestParam("csvFile2") MultipartFile csvFile2) throws IOException {
         ReturnResultData returnResultData = new ReturnResultData();
