@@ -6,6 +6,7 @@ import com.opencsv.CSVParser;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -83,18 +84,18 @@ public class TransactionCompareController {
             returnResultData.setClientProfileFile2(clientProfileListFile2);
             returnResultData.setUnmatchedRecordsFile1(clientProfileListFile1.size());
             returnResultData.setUnmatchedRecordsFile2(clientProfileListFile2.size());
-//            CsvToBean<ClientProfile> csvToBean = new CsvToBeanBuilder(reader)
-//                    .withType(ClientProfile.class)
-//                    .withIgnoreLeadingWhiteSpace(true)
-//                    .build();
-//
-//            List<ClientProfile> clientProfileFile1 = csvToBean.parse();
-//            for(ClientProfile csvUser: clientProfileFile1) {
-//                System.out.println("Name : " + csvUser.getProfileName());
-//            }
+            returnResultData.setStatus(HttpStatus.OK.value());
+            returnResultData.setResponseMessage("SUCCESS");
 
         }catch (Exception ex){
-            System.out.println(ex);
+            returnResultData.setTotalNumberFile1(0);
+            returnResultData.setTotalNumberFile2(0);
+            returnResultData.setClientProfileFile1(null);
+            returnResultData.setClientProfileFile2(null);
+            returnResultData.setUnmatchedRecordsFile1(0);
+            returnResultData.setUnmatchedRecordsFile2(0);
+            returnResultData.setStatus(HttpStatus.OK.value());
+            returnResultData.setResponseMessage("SUCCESS");
         }
         return returnResultData;
     }

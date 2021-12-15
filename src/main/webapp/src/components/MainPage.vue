@@ -7,8 +7,11 @@
           :state="Boolean(file1)"
           placeholder="Choose a file or drop it here..."
           id="file1" 
-          size="sm"> 
+          size="sm"
+          accept=".csv"
+          > 
         </b-form-file>
+        <div class="validationError" v-if="!$v.file1.required"></div>
       </b-form-group>
       <b-form-group label="Select File 2:" label-cols-sm="2" label-size="sm">
         <b-form-file 
@@ -16,10 +19,13 @@
           :state="Boolean(file2)"
           placeholder="Choose a file or drop it here..." 
           id="file2"
-          size="sm">
+          size="sm"
+          accept=".csv"
+          >
         </b-form-file>
+        <div class="validationError" v-if="!$v.file1.required"></div>
       </b-form-group>
-        <b-button block variant="primary" @click="sendFiles">Compare</b-button>
+        <b-button block variant="primary" @click="sendFiles" :disabled="checkCompareValidations()">Compare</b-button>
     </div>
     <div class="compareFiles" v-show="!showCompareResults">
       <b-card-group deck>
@@ -76,6 +82,7 @@
 
 <script>
 import axios from 'axios'
+import { required } from 'vuelidate/lib/validators'
 export default {
   name: 'MainPage',
   props: {
@@ -107,9 +114,34 @@ export default {
             ],
     } 
   },
+  validations: {
+    file1: {
+        required
+    },
+    file2: {
+        required
+    },
+  },
   methods: {
     showUnmatchedReportTables(){
       this.showUnamtchedReport = false;
+    },
+
+    makeToast(title, variant, content, delay) {
+      this.$bvToast.toast(content, {
+          title: title,
+          toaster: 'b-toaster-top-center',
+          variant: variant,
+          solid: true,
+          "auto-hide-delay": delay
+      })
+    },
+
+    checkCompareValidations (){
+      if(this.$v.file1.$invalid || this.$v.file2.$invalid)
+        return true;
+      else
+        return false;
     },
 
     sendFiles(){
@@ -126,21 +158,18 @@ export default {
           })
         return promise.then((response) => {
           console.log(response);
-            if(response.data.status == 'SUCCESS'){
-                //alert('Password Changed Successfully');
-                console.log('u prvom sam')
-            }else{
-                //alert(response.data.status);
-                console.log('u drugom sam');
-                this.totalRecordsFile1 = response.data.totalNumberFile1;
-                this.totalUnmatchedRecordsFile1 = response.data.unmatchedRecordsFile1;
-                this.matchingRecordsFile1 = this.totalRecordsFile1 - this.totalUnmatchedRecordsFile1;
-                this.unmatchedRecordsFile1 = response.data.clientProfileFile1;
-                this.totalRecordsFile2 = response.data.totalNumberFile2;
-                this.totalUnmatchedRecordsFile2 = response.data.unmatchedRecordsFile1;
-                this.matchingRecordsFile2 = this.totalRecordsFile2 - this.totalUnmatchedRecordsFile2;
-                this.unmatchedRecordsFile2 = response.data.clientProfileFile2;
-                this.showCompareResults = false;
+            if(response.data.responseMessage == 'SUCCESS'){
+              alert('Password Changed Successfully');
+              this.totalRecordsFile1 = response.data.totalNumberFile1;
+              this.totalUnmatchedRecordsFile1 = response.data.unmatchedRecordsFile1;
+              this.matchingRecordsFile1 = this.totalRecordsFile1 - this.totalUnmatchedRecordsFile1;
+              this.unmatchedRecordsFile1 = response.data.clientProfileFile1;
+              this.totalRecordsFile2 = response.data.totalNumberFile2;
+              this.totalUnmatchedRecordsFile2 = response.data.unmatchedRecordsFile1;
+              this.matchingRecordsFile2 = this.totalRecordsFile2 - this.totalUnmatchedRecordsFile2;
+              this.unmatchedRecordsFile2 = response.data.clientProfileFile2;
+              this.showCompareResults = false;
+              this.makeToast('File Comparison Finished', 'primary', response.data.responseMessage, 10000);
             }
 
         },

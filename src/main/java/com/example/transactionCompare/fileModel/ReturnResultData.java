@@ -10,7 +10,24 @@ public class ReturnResultData {
     private List<ClientProfile> clientProfileFile2;
     private Integer unmatchedRecordsFile1;
     private Integer unmatchedRecordsFile2;
+    private Integer status;
+    private String responseMessage;
 
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public String getResponseMessage() {
+        return responseMessage;
+    }
+
+    public void setResponseMessage(String responseMessage) {
+        this.responseMessage = responseMessage;
+    }
 
     public Integer getTotalNumberFile1() {
         return totalNumberFile1;
