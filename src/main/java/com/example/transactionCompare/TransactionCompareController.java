@@ -11,13 +11,11 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin
 public class TransactionCompareController {
 
     public TransactionCompareController() {
     }
 
-    @CrossOrigin
     @PostMapping("/uploadFiles")
     public ReturnResultData uploadFiles(@RequestParam("csvFile") MultipartFile csvFile, @RequestParam("csvFile2") MultipartFile csvFile2) throws IOException {
         ReturnResultData returnResultData = new ReturnResultData();
