@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.util.*;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api")
 public class TransactionCompareController {
