@@ -16,7 +16,11 @@ public class TransactionCompareController {
 
     public TransactionCompareController() {
     }
-
+    @RequestMapping("/")
+    @ResponseBody
+    String home() {
+        return "Hello World!";
+    }
     @PostMapping("/uploadFiles")
     public ReturnResultData uploadFiles(@RequestParam("csvFile") MultipartFile csvFile, @RequestParam("csvFile2") MultipartFile csvFile2) throws IOException {
         ReturnResultData returnResultData = new ReturnResultData();
