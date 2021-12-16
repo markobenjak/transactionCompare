@@ -1,7 +1,4 @@
-package com.example.transactionCompare.fileModel;
-
-import com.opencsv.bean.CsvBindByName;
-import com.opencsv.bean.CsvBindByPosition;
+package com.example.transactionCompare.FileModel;
 
 public class ClientProfile {
 

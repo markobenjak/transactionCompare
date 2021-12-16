@@ -1,4 +1,4 @@
-package com.example.transactionCompare.fileModel;
+package com.example.transactionCompare.FileModel;
 
 import java.util.List;
 

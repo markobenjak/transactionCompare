@@ -1,20 +1,12 @@
 package com.example.transactionCompare;
 
-import com.example.transactionCompare.fileModel.ClientProfile;
-import com.example.transactionCompare.fileModel.ReturnResultData;
-import com.opencsv.CSVParser;
-import com.opencsv.bean.CsvToBean;
-import com.opencsv.bean.CsvToBeanBuilder;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
+import com.example.transactionCompare.FileModel.ClientProfile;
+import com.example.transactionCompare.FileModel.ReturnResultData;
 import org.springframework.http.HttpStatus;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.apache.commons.csv.CSVFormat;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 
 @RestController
