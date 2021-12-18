@@ -38,8 +38,8 @@ public class TransactionCompareController {
     public Object uploadFiles(@RequestParam("csvFile") MultipartFile csvFile, @RequestParam("csvFile2") MultipartFile csvFile2) throws IOException {
         try {
             HashMap<Integer, String> file1Map = new HashMap<Integer, String>(); // HashMap which contains parsed data from file 1
-            List<ClientProfile> clientProfileListFile1 = new ArrayList<>(); // List of objects from File 1
-            List<ClientProfile> clientProfileListFile2 = new ArrayList<>(); // List of objects from File 2
+            List<ClientProfile> tmpClientProfileListFile1 = new ArrayList<>(); // Temporary List of objects from File 1
+            List<ClientProfile> tmpClientProfileListFile2 = new ArrayList<>(); // Temporary List of objects from File 2
 
             // Reading File 1
             byte[] csvFileBytes = csvFile.getBytes();
@@ -74,7 +74,7 @@ public class TransactionCompareController {
                     String[] splitCsvLineFile2FinalSize = new String[8]; // Creating new string array so that rows which are missing data do not break the application
                     System.arraycopy(splitCsvLineFile2, 0, splitCsvLineFile2FinalSize, 0, splitCsvLineFile2.length);
                     ClientProfile clientProfileFile2 = new ClientProfile(splitCsvLineFile2FinalSize);
-                    clientProfileListFile2.add(clientProfileFile2);
+                    tmpClientProfileListFile2.add(clientProfileFile2); // Adding objects to object list
                 }
                 numberOfFile2Lines++;
             }
@@ -85,16 +85,36 @@ public class TransactionCompareController {
                 String[] splitCsvLineFile1FinalSize = new String[8]; // Creating new string array so that rows which are missing data do not break the application
                 System.arraycopy(splitCsvLineFile1, 0, splitCsvLineFile1FinalSize, 0, splitCsvLineFile1.length);
                 ClientProfile clientProfileFile1 = new ClientProfile(splitCsvLineFile1FinalSize);
-                clientProfileListFile1.add(clientProfileFile1);
+                tmpClientProfileListFile1.add(clientProfileFile1); // Adding objects to object list
+            }
+
+            List<ClientProfile> clientProfileListFile1 = new ArrayList<>(); // Temporary List of objects from File 1
+            List<ClientProfile> clientProfileListFile2 = new ArrayList<>(); // Temporary List of objects from File 2
+            int connectionValue = 0;
+            for(ClientProfile clientProfileCloseMatchesFile1: tmpClientProfileListFile1){
+                for(ClientProfile clientProfileCloseMatchesFile2: tmpClientProfileListFile2) {
+                    if (clientProfileCloseMatchesFile1.getTransactionDate().equals(clientProfileCloseMatchesFile2.getTransactionDate())) {
+                        clientProfileCloseMatchesFile1.setConnection(connectionValue);
+                        clientProfileCloseMatchesFile2.setConnection(connectionValue);
+                        clientProfileListFile1.add(clientProfileCloseMatchesFile1);
+                        clientProfileListFile1.add(clientProfileCloseMatchesFile2);
+                    } else {
+                        clientProfileCloseMatchesFile1.setConnection(connectionValue++);
+                        clientProfileCloseMatchesFile1.setConnection(connectionValue++);
+                        clientProfileListFile1.add(clientProfileCloseMatchesFile1);
+                        clientProfileListFile1.add(clientProfileCloseMatchesFile2);
+                    }
+
+                }
             }
 
             ReturnResultData returnResultData = new ReturnResultData(); // Object which is returned as response in case of success
             returnResultData.setTotalNumberFile1(numberOfFile1Lines);
             returnResultData.setTotalNumberFile2(numberOfFile2Lines);
-            returnResultData.setClientProfileFile1(clientProfileListFile1);
-            returnResultData.setClientProfileFile2(clientProfileListFile2);
-            returnResultData.setUnmatchedRecordsFile1(clientProfileListFile1.size());
-            returnResultData.setUnmatchedRecordsFile2(clientProfileListFile2.size());
+            returnResultData.setClientProfileFile1(tmpClientProfileListFile1);
+            returnResultData.setClientProfileFile2(tmpClientProfileListFile2);
+            returnResultData.setUnmatchedRecordsFile1(tmpClientProfileListFile1.size());
+            returnResultData.setUnmatchedRecordsFile2(tmpClientProfileListFile2.size());
             returnResultData.setStatus(HttpStatus.OK.value());
             returnResultData.setResponseMessage("SUCCESS");
             return returnResultData;

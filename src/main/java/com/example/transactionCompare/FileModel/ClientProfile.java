@@ -10,7 +10,7 @@ public class ClientProfile {
     private String transactionID;
     private String transactionType;
     private String walletReference;
-
+    private Integer connection;
     public ClientProfile() {
 
     }
@@ -88,5 +88,13 @@ public class ClientProfile {
 
     public void setWalletReference(String walletReference) {
         this.walletReference = walletReference;
+    }
+
+    public Integer getConnection() {
+        return connection;
+    }
+
+    public void setConnection(Integer connection) {
+        this.connection = connection;
     }
 }
