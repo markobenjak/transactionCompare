@@ -97,15 +97,10 @@ public class TransactionCompareController {
                         clientProfileCloseMatchesFile1.setConnection(connectionValue);
                         clientProfileCloseMatchesFile2.setConnection(connectionValue);
                         clientProfileListFile1.add(clientProfileCloseMatchesFile1);
-                        clientProfileListFile1.add(clientProfileCloseMatchesFile2);
-                    } else {
-                        clientProfileCloseMatchesFile1.setConnection(connectionValue++);
-                        clientProfileCloseMatchesFile1.setConnection(connectionValue++);
-                        clientProfileListFile1.add(clientProfileCloseMatchesFile1);
-                        clientProfileListFile1.add(clientProfileCloseMatchesFile2);
+                        clientProfileListFile2.add(clientProfileCloseMatchesFile2);
                     }
-
                 }
+                connectionValue++;
             }
 
             ReturnResultData returnResultData = new ReturnResultData(); // Object which is returned as response in case of success
