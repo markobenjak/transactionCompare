@@ -104,8 +104,9 @@ public class TransactionCompareController {
                 }
                 connectionValue++;
             }
-            Collections.sort(clientProfileListFile1, comparing(ClientProfile::getTransactionDate));
-            Collections.sort(clientProfileListFile2, comparing(ClientProfile::getTransactionDate));
+            Collections.sort(tmpClientProfileListFile1, comparing(ClientProfile::getTransactionDate));
+            Collections.sort(tmpClientProfileListFile2, comparing(ClientProfile::getTransactionDate));
+
             ReturnResultData returnResultData = new ReturnResultData(); // Object which is returned as response in case of success
             returnResultData.setTotalNumberFile1(numberOfFile1Lines);
             returnResultData.setTotalNumberFile2(numberOfFile2Lines);
