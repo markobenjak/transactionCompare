@@ -38,8 +38,8 @@ public class TransactionCompareController {
 
     // Post request for files upload
     @PostMapping("/uploadFiles")
-    public Object uploadFiles(@RequestParam("csvFile") MultipartFile csvFile, @RequestParam("csvFile2") MultipartFile csvFile2) throws IOException {
-        System.out.println(FilenameUtils.getExtension(csvFile.getOriginalFilename()));
+    public Object uploadFiles(@RequestParam("csvFile") MultipartFile csvFile, @RequestParam("csvFile2") MultipartFile csvFile2) {
+        //----------Validating Files---------------
         if (csvFile == null) {
             ReturnGenericResponse returnGenericResponse = new ReturnGenericResponse(); // Object which is returned in case of error
             returnGenericResponse.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -60,13 +60,16 @@ public class TransactionCompareController {
             returnGenericResponse.setStatus(HttpStatus.UNPROCESSABLE_ENTITY.value());
             returnGenericResponse.setResponseMessage("File 2 wrong Format");
             return returnGenericResponse;
+        //-----------------------------------------
         }else {
             try {
+                //-----Creating List of objects and HashMap-----
                 HashMap<Integer, String> file1Map = new HashMap<Integer, String>(); // HashMap which contains parsed data from file 1
                 List<ClientProfile> clientProfileListFile1 = new ArrayList<>(); // List of objects from File 1
                 List<ClientProfile> clientProfileListFile2 = new ArrayList<>(); // List of objects from File 2
+                //----------------------------------------------
 
-                // Reading File 1
+                //----------Reading File 1----------------------
                 byte[] csvFileBytes = csvFile.getBytes();
                 ByteArrayInputStream inputCsvFileStream = new ByteArrayInputStream(csvFileBytes);
                 BufferedReader brFile = new BufferedReader(new InputStreamReader(inputCsvFileStream));
@@ -77,9 +80,9 @@ public class TransactionCompareController {
                     numberOfFile1Lines++;
                 }
                 brFile.close(); // Closing buffer reader
+                //----------------------------------------------
 
-
-                // Reading File 2
+                //----------Reading File 2----------------------
                 byte[] csvFile2Bytes = csvFile2.getBytes();
                 ByteArrayInputStream inputCsvFile2Stream = new ByteArrayInputStream(csvFile2Bytes);
                 BufferedReader brFile2 = new BufferedReader(new InputStreamReader(inputCsvFile2Stream));
@@ -105,7 +108,9 @@ public class TransactionCompareController {
                     numberOfFile2Lines++;
                 }
                 brFile2.close(); // Closing buffer reader for file 2
+                //----------------------------------------------------
 
+                //------HashMap to ClientProfile List of Objects------
                 for (Map.Entry<Integer, String> entry : file1Map.entrySet()) { // Iterating through HashMap of File 1
                     String[] splitCsvLineFile1 = entry.getValue().split(","); // Splitting each row
                     String[] splitCsvLineFile1FinalSize = new String[8]; // Creating new string array so that rows which are missing data do not break the application
@@ -113,8 +118,9 @@ public class TransactionCompareController {
                     ClientProfile clientProfileFile1 = new ClientProfile(splitCsvLineFile1FinalSize);
                     clientProfileListFile1.add(clientProfileFile1); // Adding objects to object list
                 }
+                //----------------------------------------------------
 
-                // Matching records with the same date
+                //------Matching records with the same date-----------
                 int connectionValue = 0;
                 for (ClientProfile clientProfileCloseMatchesFile1 : clientProfileListFile1) {
                     for (ClientProfile clientProfileCloseMatchesFile2 : clientProfileListFile2) {
@@ -125,11 +131,14 @@ public class TransactionCompareController {
                     }
                     connectionValue++;
                 }
+                //---------------------------------------------------
 
-                // Sorting lists based on date field
+                //----- Sorting lists based on date field -----------
                 Collections.sort(clientProfileListFile1, comparing(ClientProfile::getTransactionDate));
                 Collections.sort(clientProfileListFile2, comparing(ClientProfile::getTransactionDate));
+                //---------------------------------------------------
 
+                //---------------Building response ------------------
                 ReturnResultData returnResultData = new ReturnResultData(); // Object which is returned as response in case of success
                 returnResultData.setTotalNumberFile1(numberOfFile1Lines);
                 returnResultData.setTotalNumberFile2(numberOfFile2Lines);
@@ -140,6 +149,8 @@ public class TransactionCompareController {
                 returnResultData.setStatus(HttpStatus.OK.value());
                 returnResultData.setResponseMessage("SUCCESS");
                 return returnResultData;
+                //---------------------------------------------------
+
             } catch (Exception ex) {
                 ReturnGenericResponse returnGenericResponse = new ReturnGenericResponse(); // Object which is returned in case of error
                 returnGenericResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
